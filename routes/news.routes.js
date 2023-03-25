@@ -1,5 +1,5 @@
 import { Router } from "express";
 const router = Router();
-import { getAllNews } from "../controllers/news.controller";
-router.get("/news", getAllNews);
+import { getAllNews } from "../controllers/news.controller.js";
+router.get("/", getAllNews);
 export default router;

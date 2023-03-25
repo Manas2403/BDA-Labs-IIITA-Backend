@@ -6,7 +6,15 @@ const postSchema = new Schema(
         title: { type: String, required: true },
         desc: { type: String },
         links: [{ type: String, match: LINK_REGEX }],
-        people: [{ type: String, match: LINK_REGEX }],
+        people: [
+            {
+                name: String,
+                link: {
+                    type: String,
+                    match: LINK_REGEX,
+                },
+            },
+        ],
         tag: {
             type: Schema.Types.ObjectId,
             ref: "tag",
