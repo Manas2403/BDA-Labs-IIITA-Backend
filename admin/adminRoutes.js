@@ -186,6 +186,67 @@ export const addNewCourse = async (req, res) => {
         return res.redirect("/admin");
     }
 };
+export const deletePost = async (req, res) => {
+    if (!req.user) return res.redirect("/admin");
+    let id = req.body.id;
+    if (id !== undefined && id !== "") {
+        await post.findByIdAndDelete(id);
+        console.log("Post Deleted");
+        return res.redirect("/admin");
+    }
+    return res.redirect("/admin");
+};
+export const deleteNews = async (req, res) => {
+    if (!req.user) return res.redirect("/admin");
+    let id = req.body.id;
+    if (id !== undefined && id !== "") {
+        await news.findByIdAndDelete(id);
+        console.log("News Deleted");
+        return res.redirect("/admin");
+    }
+    return res.redirect("/admin");
+};
+export const deleteWorkshop = async (req, res) => {
+    if (!req.user) return res.redirect("/admin");
+    let id = req.body.id;
+    if (id !== undefined && id !== "") {
+        await workshop.findByIdAndDelete(id);
+        console.log("Workshop Deleted");
+        return res.redirect("/admin");
+    }
+    return res.redirect("/admin");
+};
+export const deleteTeamMember = async (req, res) => {
+    if (!req.user) return res.redirect("/admin");
+    let id = req.body.id;
+    if (id !== undefined && id !== "") {
+        await team.findByIdAndDelete(id);
+        console.log("Team Member Deleted");
+        return res.redirect("/admin");
+    }
+    return res.redirect("/admin");
+};
+export const deleteCourse = async (req, res) => {
+    if (!req.user) return res.redirect("/admin");
+    let id = req.body.id;
+    if (id !== undefined && id !== "") {
+        await course.findByIdAndDelete(id);
+        console.log("Course Deleted");
+        return res.redirect("/admin");
+    }
+    return res.redirect("/admin");
+};
+export const deleteTag = async (req, res) => {
+    if (!req.user) return res.redirect("/admin");
+    let id = req.body.id;
+    if (id !== undefined && id !== "") {
+        await tag.findByIdAndDelete(id);
+        console.log("Tag Deleted");
+        return res.redirect("/admin");
+    }
+    return res.redirect("/admin");
+};
+
 export const home = async (req, res) => {
     res.render("admin", { user: req.user });
 };
