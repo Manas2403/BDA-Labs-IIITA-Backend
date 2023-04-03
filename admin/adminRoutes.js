@@ -2,6 +2,8 @@ import tag from "../models/tag.model.js";
 import post from "../models/post.model.js";
 import news from "../models/news.model.js";
 import workshop from "../models/workshop.model.js";
+import team from "../models/team.model.js";
+import course from "../models/course.model.js";
 import passport from "../passport.config.js";
 import { Router } from "express";
 const router = Router();
@@ -114,8 +116,77 @@ export const addNewPost = async (req, res) => {
     }
     return res.redirect("/admin");
 };
+export const addNewTeamMember = async (req, res) => {
+    if (!req.user) return res.redirect("/admin");
+    let name = req.body.name,
+        position = req.body.position,
+        description = req.body.description,
+        email = req.body.email,
+        interests = req.body.interests;
+    if (
+        name !== undefined &&
+        name !== "" &&
+        description !== undefined &&
+        description !== ""
+    ) {
+        let newTeamMember = new team({
+            name: name,
+            position: position,
+            description: description,
+            email: email,
+        });
+        if (typeof interests === typeof "text") {
+            newPost.interests.push(interests);
+        } else {
+            for (let i = 0; i < interests.length || 0; i++) {
+                newPost.interests.push(interests[i]);
+            }
+        }
+        await newTeamMember.save();
+        console.log("New Team Member Added");
+        return res.redirect("/admin");
+    }
+    return res.redirect("/admin");
+};
+export const addNewCourse = async (req, res) => {
+    if (!req.user) return res.redirect("/admin");
+    let name = req.body.name,
+        instructor = req.body.instructor,
+        phd = req.body.phd,
+        mtech = req.body.mtech,
+        students = req.body.students,
+        publications = req.body.publications;
+    if (
+        name !== undefined &&
+        name !== "" &&
+        instructor !== undefined &&
+        instructor !== ""
+    ) {
+        let newCourse = new course({
+            name: name,
+            instructor: instructor,
+            students: students,
+        });
+        if (typeof phd === typeof "text") {
+            newPost.phd.push(phd);
+        } else {
+            for (let i = 0; i < phd.length || 0; i++) {
+                newPost.phd.push(pdh[i]);
+            }
+        }
+        if (typeof mtech === typeof "text") {
+            newPost.mtech.push(mtech);
+        } else {
+            for (let i = 0; i < mtech.length || 0; i++) {
+                newPost.mtech.push(mtech[i]);
+            }
+        }
+        await newCourse.save();
+        console.log("New Course Added");
+        return res.redirect("/admin");
+    }
+};
 export const home = async (req, res) => {
-    // if (!req.user) return res.redirect("/admin");
     res.render("admin", { user: req.user });
 };
 export const getTagePage = async (req, res) => {
@@ -135,6 +206,14 @@ export const getWorkshopPage = async (req, res) => {
     if (!req.user) return res.redirect("/admin");
     res.render("workshop", { user: req.user });
 };
+export const getTeamPage = async (req, res) => {
+    if (!req.user) return res.redirect("/admin");
+    res.render("team", { user: req.user });
+};
+export const getCoursePage = async (req, res) => {
+    if (!req.user) return res.redirect("/admin");
+    res.render("course", { user: req.user });
+};
 router.get("/", home);
 router.post("/", passport.authenticate("local"), home);
 router.post("/newtag", addNewTag);
@@ -145,4 +224,8 @@ router.post("/newworkshop", addnewWorkshop);
 router.get("/newworkshop", getWorkshopPage);
 router.post("/newpost", addNewPost);
 router.get("/newpost", getPostPage);
+router.post("/newteam", addNewTeamMember);
+router.get("/newteam", getTeamPage);
+router.post("/newcourse", addNewCourse);
+router.get("/newCourse", getCoursePage);
 export default router;
