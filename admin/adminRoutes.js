@@ -149,7 +149,8 @@ export const addNewCourse = async (req, res) => {
         phd = req.body.phd,
         mtech = req.body.mtech,
         students = req.body.students,
-        publications = req.body.publications;
+        projectname = req.body.projectname,
+        projectlink = req.body.projectlink;
     if (
         name !== undefined &&
         name !== "" &&
@@ -162,17 +163,30 @@ export const addNewCourse = async (req, res) => {
             students: students,
         });
         if (typeof phd === typeof "text") {
-            newPost.phd.push(phd);
+            newCourse.phd.push(phd);
         } else {
             for (let i = 0; i < phd.length || 0; i++) {
-                newPost.phd.push(pdh[i]);
+                newCourse.phd.push(phd[i]);
             }
         }
         if (typeof mtech === typeof "text") {
-            newPost.mtech.push(mtech);
+            newCourse.mtech.push(mtech);
         } else {
             for (let i = 0; i < mtech.length || 0; i++) {
-                newPost.mtech.push(mtech[i]);
+                newCourse.mtech.push(mtech[i]);
+            }
+        }
+        if (typeof publications === typeof "text") {
+            newCourse.publications.push({
+                name: projectname,
+                link: projectlink,
+            });
+        } else {
+            for (let i = 0; i < projectname.length || 0; i++) {
+                newCourse.publications.push({
+                    name: projectname[i],
+                    link: projectlink[i],
+                });
             }
         }
         await newCourse.save();
