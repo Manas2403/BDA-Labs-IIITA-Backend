@@ -24,11 +24,9 @@ const teamSchema = new Schema({
     email: {
         type: String,
     },
-    interests: [
-        {
-            type: String,
-        },
-    ],
+    interests: {
+        type: String,
+    },
 });
 const team = model("Team", teamSchema);
 export default team;

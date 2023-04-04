@@ -134,14 +134,8 @@ export const addNewTeamMember = async (req, res) => {
             position: position,
             description: description,
             email: email,
+            interests: interests,
         });
-        if (typeof interests === typeof "text") {
-            newPost.interests.push(interests);
-        } else {
-            for (let i = 0; i < interests.length || 0; i++) {
-                newPost.interests.push(interests[i]);
-            }
-        }
         await newTeamMember.save();
         console.log("New Team Member Added");
         return res.redirect("/admin");
@@ -288,5 +282,5 @@ router.get("/newpost", getPostPage);
 router.post("/newteam", addNewTeamMember);
 router.get("/newteam", getTeamPage);
 router.post("/newcourse", addNewCourse);
-router.get("/newCourse", getCoursePage);
+router.get("/newcourse", getCoursePage);
 export default router;
