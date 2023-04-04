@@ -1,15 +1,13 @@
 import mongoose from "mongoose";
-
+import * as dotenv from "dotenv";
+dotenv.config();
 export default function connDB() {
     mongoose.set("strictQuery", true);
     mongoose
-        .connect(
-            "mongodb+srv://manas:manas123@bda-labs.y05bgsv.mongodb.net/?retryWrites=true&w=majority",
-            {
-                useNewUrlParser: true,
-                useUnifiedTopology: true,
-            }
-        )
+        .connect(process.env.MONGO_DB_CONN_STRING, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        })
         .then(() => {
             console.log("connected to db");
         });
