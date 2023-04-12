@@ -30,7 +30,7 @@
         </style>
     </head>
     <body>
-        <div><h1>Admin Page</h1></div>
+        <div><h1 style="color: rgb(1, 41, 112)">Admin Page</h1></div>
         <% if(!user){ %>
         <form action="" method="post">
             <div class="form-group">
@@ -57,27 +57,63 @@
                     />
                 </label>
             </div>
-            <button type="submit" class="btn btn-primary mb-5">Login</button>
+            <button
+                type="submit"
+                class="btn btn-primary mb-5"
+                style="background-color: rgb(1, 41, 112)"
+            >
+                Login
+            </button>
         </form>
         <% } else{ %>
         <div class="btn-container">
             <a href="/admin/newpost">
-                <button class="btn btn-primary">Add Article</button>
+                <button
+                    class="btn btn-primary"
+                    style="background-color: rgb(1, 41, 112)"
+                >
+                    Add Article
+                </button>
             </a>
             <a href="/admin/newtag">
-                <button class="btn btn-primary">Add Tag</button>
+                <button
+                    class="btn btn-primary"
+                    style="background-color: rgb(1, 41, 112)"
+                >
+                    Add Tag
+                </button>
             </a>
             <a href="/admin/newnews">
-                <button class="btn btn-primary">Add News</button>
+                <button
+                    class="btn btn-primary"
+                    style="background-color: rgb(1, 41, 112)"
+                >
+                    Add News
+                </button>
             </a>
             <a href="/admin/newworkshop">
-                <button class="btn btn-primary">Add Workshop</button>
+                <button
+                    class="btn btn-primary"
+                    style="background-color: rgb(1, 41, 112)"
+                >
+                    Add Workshop
+                </button>
             </a>
             <a href="/admin/newcourse">
-                <button class="btn btn-primary">Add Course</button>
+                <button
+                    class="btn btn-primary"
+                    style="background-color: rgb(1, 41, 112)"
+                >
+                    Add Course
+                </button>
             </a>
             <a href="/admin/newteam">
-                <button class="btn btn-primary">Add Team Member</button>
+                <button
+                    class="btn btn-primary"
+                    style="background-color: rgb(1, 41, 112)"
+                >
+                    Add Team Member
+                </button>
             </a>
         </div>
         <% } %>
