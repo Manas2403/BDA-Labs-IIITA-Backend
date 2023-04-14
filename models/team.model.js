@@ -1,4 +1,6 @@
 import { model, Schema } from "mongoose";
+const LINK_REGEX =
+    /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/;
 const teamSchema = new Schema(
     {
         name: {
@@ -18,6 +20,10 @@ const teamSchema = new Schema(
             ],
             default: "Others",
         },
+        title: {
+            type: String,
+            required: true,
+        },
         description: {
             type: String,
             required: true,
@@ -25,8 +31,9 @@ const teamSchema = new Schema(
         email: {
             type: String,
         },
-        interests: {
+        link: {
             type: String,
+            match: LINK_REGEX,
         },
     },
     { timestamps: true }

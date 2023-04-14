@@ -89,7 +89,7 @@
                         class="form-control form-control-lg"
                     />
                 </div>
-                <div class="form-group">
+                <!-- <div class="form-group">
                     <label for="desc">Payment Link</label>
                     <input
                         type="link"
@@ -99,24 +99,16 @@
                         placeholder="Enter Payment Link"
                         class="form-control form-control-lg"
                     />
-                </div>
-                <div class="link-container">
-                    <div class="form-group">
-                        <label for="link">Link</label>
-                        <input
-                            type="url"
-                            name="externalLinks"
-                            id="externalLinks"
-                            class="form-control"
-                            placeholder="Enter link"
-                        />
-                    </div>
-                    <button
-                        type="button"
-                        class="btn-sm btn-secondary link-btn mb-4"
-                    >
-                        Add Link
-                    </button>
+                </div> -->
+                <div class="form-group">
+                    <label for="link">Link</label>
+                    <input
+                        type="url"
+                        name="externalLinks"
+                        id="externalLinks"
+                        class="form-control"
+                        placeholder="Enter link"
+                    />
                 </div>
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>
@@ -136,27 +128,5 @@
             integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
             crossorigin="anonymous"
         ></script>
-        <script>
-            const links = document.querySelector(".link-container");
-            const addLinkBtn = document.querySelector(".link-btn");
-            const authors = document.querySelector(".peep-container");
-            const addAuthorBtn = document.querySelector(".peep-btn");
-            const newLink = `
-        <div class="alert alert-light form-row alert-dismissible my-0" role="alert">
-        <div class="form-group col-md-8">
-          <input
-          type="url"
-          name="link"
-          id="link"
-          class="form-control"
-          placeholder="Enter link"
-        />
-        <button type="button" class="close justify-self-end" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-      </div>
-      </div>`;
-            addLinkBtn.addEventListener("click", () => {
-                links.insertAdjacentHTML("afterend", newLink);
-            });
-        </script>
     </body>
 </html>

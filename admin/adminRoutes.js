@@ -284,7 +284,7 @@ export const getCoursePage = async (req, res) => {
     res.render("course", { user: req.user });
 };
 router.get("/", home);
-router.post("/", passport.authenticate("local"), home);
+router.post("/", passport.authenticate("admin"), home);
 router.post("/newtag", addNewTag);
 router.get("/newtag", getTagePage);
 router.post("/newnews", addnewNews);

@@ -12,6 +12,7 @@ import teamRouter from "./routes/team.routes.js";
 import adminRouter from "./admin/adminRoutes.js";
 import passport from "./passport.config.js";
 import session from "express-session";
+import userRouter from "./routes/user.routes.js";
 dotenv.config();
 const app = express();
 app.set("view engine", "ejs");
@@ -43,7 +44,7 @@ app.use("/posts", postsRouter);
 app.use("/courses", courseRouter);
 app.use("/team", teamRouter);
 app.use("/admin", checkAuthenticated, adminRouter);
-
+app.use("/user", userRouter);
 app.listen(
     process.env.PORT ? process.env.PORT : 8080,
     process.env.HOST ? process.env.HOST : "127.0.0.1",

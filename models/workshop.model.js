@@ -22,8 +22,10 @@ const workshopSchema = new Schema(
             type: String,
             match: LINK_REGEX,
         },
-        paymentLink: { type: String, match: LINK_REGEX },
-        externalLinks: [{ type: String, match: LINK_REGEX }],
+        externalLink: {
+            type: String,
+            match: LINK_REGEX,
+        },
     },
     { timestamps: true }
 );
