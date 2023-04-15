@@ -35,6 +35,9 @@ const teamSchema = new Schema(
             type: String,
             match: LINK_REGEX,
         },
+        profileImg: {
+            type: String,
+        },
     },
     { timestamps: true }
 );

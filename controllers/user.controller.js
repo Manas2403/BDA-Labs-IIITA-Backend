@@ -58,6 +58,7 @@ export const registerUser = async (req, res) => {
             researchInterests,
             address,
             profileImg: imgName,
+            publications: [],
         },
         password,
         (err, user) => {
@@ -95,4 +96,26 @@ export const getUser = async (req, res) => {
     const command = new GetObjectCommand(getObjectParams);
     const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
     return response_200(res, "User found successfully", { user, url });
+};
+export const addPublication = async (req, res) => {
+    const { username } = req.params;
+    console.log(username);
+    const user = await User.findOne({ username: username });
+    const { title, description, link } = req.body;
+    if (!title || !description || !link) {
+        return response_400(res, "Please fill all fields");
+    }
+    let publication = {
+        title: title,
+        description: description,
+        link: link,
+    };
+    try {
+        console.log(user.publications);
+        user.publications.push(publication);
+        await user.save();
+        return response_200(res, "Publication added successfully");
+    } catch (err) {
+        return response_500(res, "Error adding publication", err);
+    }
 };
