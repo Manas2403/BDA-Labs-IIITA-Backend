@@ -6,7 +6,30 @@ import team from "../models/team.model.js";
 import course from "../models/course.model.js";
 import passport from "../passport.config.js";
 import { Router } from "express";
+import { upload } from "../middlewares/multer.middleware.js";
 const router = Router();
+import * as dotenv from "dotenv";
+dotenv.config();
+import {
+    S3Client,
+    PutObjectCommand,
+    GetObjectCommand,
+} from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import crypto from "crypto";
+const bucketName = process.env.AWS_BUCKET_NAME;
+const region = process.env.AWS_BUCKET_REGION;
+const accessKeyId = process.env.AWS_ACCESS_KEY;
+const secretAccessKey = process.env.AWS_SECRET_KEY;
+const s3 = new S3Client({
+    region,
+    credentials: {
+        accessKeyId,
+        secretAccessKey,
+    },
+});
+const randomImageName = (bytes = 32) =>
+    crypto.randomBytes(bytes).toString("hex");
 export const addNewTag = async (req, res) => {
     // if (!req.user) return res.redirect("/admin");
     if (req.body.name !== undefined && req.body.name !== "") {
@@ -35,14 +58,22 @@ export const addnewNews = async (req, res) => {
     return res.redirect("/admin");
 };
 export const addnewWorkshop = async (req, res) => {
+    console.log(req);
     if (!req.user) return res.redirect("/admin");
     let title = req.body.title;
     let desc = req.body.desc;
     let startDate = req.body.startDate;
     let endDate = req.body.endDate;
     let registerationLink = req.body.registerationLink;
-    let paymentLink = req.body.paymentLink;
-    let externalLinks = req.body.externalLinks;
+    let externalLink = req.body.externalLink;
+    const imgName = randomImageName();
+    const params = {
+        Bucket: bucketName,
+        Key: imgName,
+        Body: req.file.buffer,
+        ContentType: req.file.mimeType,
+    };
+    const data = await s3.send(new PutObjectCommand(params));
     if (
         title !== undefined &&
         title !== "" &&
@@ -55,15 +86,9 @@ export const addnewWorkshop = async (req, res) => {
             startDate: startDate,
             endDate: endDate,
             registerationLink: registerationLink,
-            paymentLink: paymentLink,
+            workshopImg: imgName,
+            externalLink: externalLink,
         });
-        if (typeof externalLinks === typeof "text") {
-            newWorkshop.externalLinks.push(externalLinks);
-        } else {
-            for (let i = 0; i < externalLinks.length || 0; i++) {
-                newWorkshop.externalLinks.push(externalLinks[i]);
-            }
-        }
         await newWorkshop.save();
         console.log("New Workshop Added");
         return res.redirect("/admin");
@@ -123,6 +148,14 @@ export const addNewTeamMember = async (req, res) => {
         description = req.body.description,
         email = req.body.email,
         interests = req.body.interests;
+    const imgName = randomImageName();
+    const params = {
+        Bucket: bucketName,
+        Key: imgName,
+        Body: req.file.buffer,
+        ContentType: req.file.mimeType,
+    };
+    const data = await s3.send(new PutObjectCommand(params));
     if (
         name !== undefined &&
         name !== "" &&
@@ -135,6 +168,7 @@ export const addNewTeamMember = async (req, res) => {
             description: description,
             email: email,
             interests: interests,
+            profileImg: imgName,
         });
         await newTeamMember.save();
         console.log("New Team Member Added");
@@ -289,11 +323,11 @@ router.post("/newtag", addNewTag);
 router.get("/newtag", getTagePage);
 router.post("/newnews", addnewNews);
 router.get("/newnews", getNewsPage);
-router.post("/newworkshop", addnewWorkshop);
+router.post("/newworkshop", upload.single("workshopImg"), addnewWorkshop);
 router.get("/newworkshop", getWorkshopPage);
 router.post("/newpost", addNewPost);
 router.get("/newpost", getPostPage);
-router.post("/newteam", addNewTeamMember);
+router.post("/newteam", upload.single("profileImg"), addNewTeamMember);
 router.get("/newteam", getTeamPage);
 router.post("/newcourse", addNewCourse);
 router.get("/newcourse", getCoursePage);

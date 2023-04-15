@@ -26,9 +26,12 @@ const workshopSchema = new Schema(
             type: String,
             match: LINK_REGEX,
         },
-        workshopImg:{
-            type:String,
-        }
+        workshopImg: {
+            type: String,
+        },
+        workshopUrl: {
+            type: String,
+        },
     },
     { timestamps: true }
 );

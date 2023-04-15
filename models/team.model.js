@@ -20,10 +20,6 @@ const teamSchema = new Schema(
             ],
             default: "Others",
         },
-        title: {
-            type: String,
-            required: true,
-        },
         description: {
             type: String,
             required: true,
@@ -36,6 +32,9 @@ const teamSchema = new Schema(
             match: LINK_REGEX,
         },
         profileImg: {
+            type: String,
+        },
+        profileUrl: {
             type: String,
         },
     },
