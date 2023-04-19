@@ -50,6 +50,17 @@
                 <button type="submit" class="btn btn-success">Add</button>
             </div>
         </form>
+        <div class="text-center display-4">All Tags</div>
+        <div class="d-flex flex-col gap-3 align-items-center">
+            <% for(let i=0;i<tags.length;i++){%> 
+                <div class="d-flex flex-row  align-items-center">
+                <div style="font-size:1.5rem;margin-right:1rem" ><%=tags[i].name%></div> 
+                <form action="/admin/deletetag/<%=tags[i]._id%>" method="post">
+                    <button type="submit" class="btn btn-primary">Delete</button>
+                  </form>
+                </div>
+            <%}%>
+        </div>
         <script
             src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
             integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"

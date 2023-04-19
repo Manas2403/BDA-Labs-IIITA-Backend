@@ -16,6 +16,46 @@
                 margin: 2rem;
                 width: 80%;
             }
+            .workshop-container {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            .workshop {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                background: white;
+                padding: 1rem;
+                gap: 2rem;
+                border-radius: 1rem;
+                border: 2px solid rgb(1, 41, 112);
+                box-shadow: 0 2px 4px 1px rgb(12 0 46 / 4%);
+                transition: all 0.3s ease-in-out;
+            }
+            .workshop_desc {
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+            }
+            .workshop_title {
+                color: rgb(1, 41, 112);
+                font-size: 1.5rem;
+                font-weight: bold;
+            }
+            .workshop_img img {
+                border-radius: 1rem;
+            }
+            @media (max-width: 900px) {
+                .workshop {
+                    flex-direction: column-reverse;
+                    gap: 2rem;
+                }
+            }
+            
         </style>
     </head>
     <body>
@@ -126,6 +166,25 @@
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>
         </div>
+        <div class="text-center display-4">All Workshops</div>
+    <section>
+      <div class="workshop-container">
+        <%for(let i=0;i<workshops.length;i++){%>
+            <div class="workshop">
+                <div class="workshop_desc">
+                    <div class="workshop_title">
+                        <%=workshops[i].title%>
+                    </div>
+                    <div class="workshop_description">
+                       <%=workshops[i].desc%>
+                    </div>
+                </div>
+                <form action="/admin/deleteworkshop/<%=workshops[i]._id%>" method="post">
+                    <button type="submit" class="btn btn-primary">Delete</button>
+                  </form>
+            </div>
+        <%}%>
+      </div>
         <script
             src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
             integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"

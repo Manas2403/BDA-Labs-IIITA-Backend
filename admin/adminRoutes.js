@@ -14,6 +14,7 @@ import {
     S3Client,
     PutObjectCommand,
     GetObjectCommand,
+    DeleteObjectCommand,
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import crypto from "crypto";
@@ -230,7 +231,7 @@ export const addNewCourse = async (req, res) => {
 };
 export const deletePost = async (req, res) => {
     if (!req.user) return res.redirect("/admin");
-    let id = req.body.id;
+    let { id } = req.params;
     if (id !== undefined && id !== "") {
         await post.findByIdAndDelete(id);
         console.log("Post Deleted");
@@ -240,7 +241,7 @@ export const deletePost = async (req, res) => {
 };
 export const deleteNews = async (req, res) => {
     if (!req.user) return res.redirect("/admin");
-    let id = req.body.id;
+    let { id } = req.params;
     if (id !== undefined && id !== "") {
         await news.findByIdAndDelete(id);
         console.log("News Deleted");
@@ -250,8 +251,18 @@ export const deleteNews = async (req, res) => {
 };
 export const deleteWorkshop = async (req, res) => {
     if (!req.user) return res.redirect("/admin");
-    let id = req.body.id;
+    let { id } = req.params;
     if (id !== undefined && id !== "") {
+        const w = await workshop.findById(id);
+        if (!w) {
+            return res.redirect("/admin");
+        }
+        const params = {
+            Bucket: bucketName,
+            Key: w.workshopImg,
+        };
+        const command = new DeleteObjectCommand(params);
+        await s3.send(command);
         await workshop.findByIdAndDelete(id);
         console.log("Workshop Deleted");
         return res.redirect("/admin");
@@ -260,8 +271,18 @@ export const deleteWorkshop = async (req, res) => {
 };
 export const deleteTeamMember = async (req, res) => {
     if (!req.user) return res.redirect("/admin");
-    let id = req.body.id;
+    let { id } = req.params;
     if (id !== undefined && id !== "") {
+        const t = await team.findById(id);
+        if (!t) {
+            return res.redirect("/admin");
+        }
+        const params = {
+            Bucket: bucketName,
+            Key: t.profileImg,
+        };
+        const command = new DeleteObjectCommand(params);
+        await s3.send(command);
         await team.findByIdAndDelete(id);
         console.log("Team Member Deleted");
         return res.redirect("/admin");
@@ -270,7 +291,7 @@ export const deleteTeamMember = async (req, res) => {
 };
 export const deleteCourse = async (req, res) => {
     if (!req.user) return res.redirect("/admin");
-    let id = req.body.id;
+    let { id } = req.params;
     if (id !== undefined && id !== "") {
         await course.findByIdAndDelete(id);
         console.log("Course Deleted");
@@ -280,7 +301,7 @@ export const deleteCourse = async (req, res) => {
 };
 export const deleteTag = async (req, res) => {
     if (!req.user) return res.redirect("/admin");
-    let id = req.body.id;
+    let { id } = req.params;
     if (id !== undefined && id !== "") {
         await tag.findByIdAndDelete(id);
         console.log("Tag Deleted");
@@ -294,28 +315,34 @@ export const home = async (req, res) => {
 };
 export const getTagePage = async (req, res) => {
     if (!req.user) return res.redirect("/admin");
-    res.render("tag", { user: req.user });
+    const tags = await tag.find({});
+    res.render("tag", { user: req.user, tags: tags });
 };
 export const getPostPage = async (req, res) => {
     if (!req.user) return res.redirect("/admin");
     const tags = await tag.find({});
-    res.render("post", { user: req.user, tags: tags });
+    const posts = await post.find({});
+    res.render("post", { user: req.user, tags: tags, posts: posts });
 };
 export const getNewsPage = async (req, res) => {
     if (!req.user) return res.redirect("/admin");
-    res.render("news", { user: req.user });
+    const allNews = await news.find({});
+    res.render("news", { user: req.user, news: allNews });
 };
 export const getWorkshopPage = async (req, res) => {
     if (!req.user) return res.redirect("/admin");
-    res.render("workshop", { user: req.user });
+    const workshops = await workshop.find({});
+    res.render("workshop", { user: req.user, workshops: workshops });
 };
 export const getTeamPage = async (req, res) => {
     if (!req.user) return res.redirect("/admin");
-    res.render("team", { user: req.user });
+    const teams = await team.find({});
+    res.render("team", { user: req.user, teams: teams });
 };
 export const getCoursePage = async (req, res) => {
     if (!req.user) return res.redirect("/admin");
-    res.render("course", { user: req.user });
+    const courses = await course.find({});
+    res.render("course", { user: req.user, courses: courses });
 };
 router.get("/", home);
 router.post("/", passport.authenticate("admin"), home);
@@ -331,4 +358,10 @@ router.post("/newteam", upload.single("profileImg"), addNewTeamMember);
 router.get("/newteam", getTeamPage);
 router.post("/newcourse", addNewCourse);
 router.get("/newcourse", getCoursePage);
+router.post("/deletepost/:id", deletePost);
+router.post("/deletenews/:id", deleteNews);
+router.post("/deleteworkshop/:id", deleteWorkshop);
+router.post("/deleteteammember/:id", deleteTeamMember);
+router.post("/deletecourse/:id", deleteCourse);
+router.post("/deletetag/:id", deleteTag);
 export default router;

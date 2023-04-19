@@ -11,11 +11,67 @@
       integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
       crossorigin="anonymous"
     />
+    <link
+    rel="stylesheet"
+    href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"
+/>
     <style>
       .form-container {
         margin: 2rem;
         width: 80%;
       }
+      .post-container {
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin-bottom: 4rem;
+    }
+    .post {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        background-color: white;
+        /* padding: 1rem; */
+        border-radius: 1rem;
+        /* border: 2px solid rgb(1, 41, 112); */
+        box-shadow: 0 2px 4px 1px rgb(12 0 46 / 4%);
+        transition: all 0.3s ease-in-out;
+    }
+    .post_heading{
+      display: flex;
+      flex-direction: row;
+      background-color: rgb(1, 41, 112);
+      align-items: center;
+        gap: 1rem;
+    }
+    .post_title {
+        color: white;
+        font-size: 1.3rem;
+        border-top-left-radius: 1rem;
+        border-top-right-radius: 1rem;
+        padding: 0.5rem;
+        /* font-weight: bold; */
+    }
+    .post_authors {
+        padding: 0 0.5rem;
+        padding-top: 1rem;
+    }
+    .post_desc {
+        padding: 2rem;
+    }
+    .external_links {
+        padding: 0 0.5rem;
+        padding-bottom: 1rem;
+    }
+    .post_authors a {
+        font-size: 1rem;
+        /* font-weight: bold; */
+    }
+    .external_links a {
+        color: blue;
+    }
+    
     </style>
   </head>
   <body>
@@ -110,6 +166,24 @@
         <button type="submit" class="btn btn-primary">Submit</button>
       </form>
     </div>
+    <div class="text-center display-4">All Posts</div>
+    <section>
+      <div class="post-container">
+        <%for(let i=0;i<posts.length;i++){%>
+          <div class="post">
+            <div class="post_heading">
+            <div class="post_title"> 
+                <%=posts[i].title%>
+          </div>
+          <form action="/admin/deletepost/<%=posts[i]._id%>" method="post">
+            <button type="submit" class="btn btn-primary">Delete</button>
+          </form>
+        </div>
+            <div class="post_desc"><%=posts[i].desc%></div>
+        </div>
+        <%}%>
+      </div>
+  </section>
     <script
       src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
       integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
