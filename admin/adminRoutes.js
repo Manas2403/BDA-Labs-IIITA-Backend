@@ -211,7 +211,7 @@ export const addNewCourse = async (req, res) => {
                 newCourse.mtech.push(mtech[i]);
             }
         }
-        if (typeof publications === typeof "text") {
+        if (typeof projectname === typeof "text") {
             newCourse.publications.push({
                 name: projectname,
                 link: projectlink,
