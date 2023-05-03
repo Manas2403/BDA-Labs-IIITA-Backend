@@ -4,6 +4,7 @@ import news from "../models/news.model.js";
 import workshop from "../models/workshop.model.js";
 import team from "../models/team.model.js";
 import course from "../models/course.model.js";
+import project from "../models/project.model.js";
 import passport from "../passport.config.js";
 import { Router } from "express";
 import { upload } from "../middlewares/multer.middleware.js";
@@ -229,6 +230,34 @@ export const addNewCourse = async (req, res) => {
         return res.redirect("/admin");
     }
 };
+export const addNewProject = async (req, res) => {
+    if (!req.user) return res.redirect("/admin");
+    const title = req.body.title,
+        supervisor = req.body.supervisor,
+        link = req.body.link,
+        description = req.body.description,
+        fundingAgency = req.body.fundingAgency,
+        amount = req.body.amount;
+    if (
+        title !== undefined &&
+        title !== "" &&
+        supervisor !== undefined &&
+        supervisor !== ""
+    ) {
+        let newProject = new project({
+            title: title,
+            supervisor: supervisor,
+            link: link,
+            description: description,
+            fundingAgency: fundingAgency,
+            amount: amount,
+        });
+        await newProject.save();
+        console.log("New Project Added");
+        return res.redirect("/admin");
+    }
+    res.redirect("/admin");
+};
 export const deletePost = async (req, res) => {
     if (!req.user) return res.redirect("/admin");
     let { id } = req.params;
@@ -299,6 +328,16 @@ export const deleteCourse = async (req, res) => {
     }
     return res.redirect("/admin");
 };
+export const deleteProject = async (req, res) => {
+    if (!req.user) return res.redirect("/admin");
+    let { id } = req.params;
+    if (id !== undefined && id !== "") {
+        await project.findByIdAndDelete(id);
+        console.log("Project Deleted");
+        return res.redirect("/admin");
+    }
+    return res.redirect("/admin");
+};
 export const deleteTag = async (req, res) => {
     if (!req.user) return res.redirect("/admin");
     let { id } = req.params;
@@ -344,6 +383,11 @@ export const getCoursePage = async (req, res) => {
     const courses = await course.find({});
     res.render("course", { user: req.user, courses: courses });
 };
+export const getProjectPage = async (req, res) => {
+    if (!req.user) return res.redirect("/admin");
+    const projects = await project.find({});
+    res.render("project", { user: req.user, projects: projects });
+};
 router.get("/", home);
 router.post("/", passport.authenticate("admin"), home);
 router.post("/newtag", addNewTag);
@@ -358,10 +402,13 @@ router.post("/newteam", upload.single("profileImg"), addNewTeamMember);
 router.get("/newteam", getTeamPage);
 router.post("/newcourse", addNewCourse);
 router.get("/newcourse", getCoursePage);
+router.post("/newproject", addNewProject);
+router.get("/newproject", getProjectPage);
 router.post("/deletepost/:id", deletePost);
 router.post("/deletenews/:id", deleteNews);
 router.post("/deleteworkshop/:id", deleteWorkshop);
 router.post("/deleteteammember/:id", deleteTeamMember);
 router.post("/deletecourse/:id", deleteCourse);
 router.post("/deletetag/:id", deleteTag);
+router.post("/deleteproject/:id", deleteProject);
 export default router;

@@ -9,6 +9,7 @@ import workshopRouter from "./routes/workshop.routes.js";
 import postsRouter from "./routes/post.routes.js";
 import courseRouter from "./routes/course.routes.js";
 import teamRouter from "./routes/team.routes.js";
+import projectRouter from "./routes/project.routes.js"
 import adminRouter from "./admin/adminRoutes.js";
 import passport from "./passport.config.js";
 import session from "express-session";
@@ -43,6 +44,7 @@ app.use("/workshops", workshopRouter);
 app.use("/posts", postsRouter);
 app.use("/courses", courseRouter);
 app.use("/team", teamRouter);
+app.use("/projects",projectRouter);
 app.use("/admin", checkAuthenticated, adminRouter);
 app.use("/user", userRouter);
 app.listen(
