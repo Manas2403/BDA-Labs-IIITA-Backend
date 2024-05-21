@@ -1,3 +1,6 @@
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+import path from "path";
 import workshop from "../models/workshop.model.js";
 import {
     response_200,
@@ -6,40 +9,30 @@ import {
 } from "../utils/response_codes.js";
 import * as dotenv from "dotenv";
 dotenv.config();
-import {
-    S3Client,
-    PutObjectCommand,
-    GetObjectCommand,
-} from "@aws-sdk/client-s3";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-const bucketName = process.env.AWS_BUCKET_NAME;
-const region = process.env.AWS_BUCKET_REGION;
-const accessKeyId = process.env.AWS_ACCESS_KEY;
-const secretAccessKey = process.env.AWS_SECRET_KEY;
-const s3 = new S3Client({
-    region,
-    credentials: {
-        accessKeyId,
-        secretAccessKey,
-    },
-});
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const projectRoot = path.join(__dirname, "..");
+
+// Assuming you have a base URL for your server
+const BASE_URL = process.env.BASE_URL || "http://localhost:8080";
+
 export const getAllWorkshops = async (req, res) => {
     try {
         const workshopData = await workshop.find();
-        workshopData.map(async (workshop) => {
-            const getObjectParams = {
-                Bucket: bucketName,
-                Key: workshop.workshopImg,
+
+        // Map through workshopData to add image URLs
+        const workshopsWithImageUrls = workshopData.map((workshop) => {
+            return {
+                ...workshop.toObject(),
+                workshopImgUrl: `${BASE_URL}/uploads/${workshop.workshopImg}`,
             };
-            const command = new GetObjectCommand(getObjectParams);
-            const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
-            workshop.workshopUrl = url;
-            await workshop.save();
         });
+
         return response_200(
             res,
             "Workshops fetched successfully",
-            workshopData
+            workshopsWithImageUrls
         );
     } catch (err) {
         return response_500(res, "Error fetching workshops", err);

@@ -1,3 +1,5 @@
+import fs from "fs";
+import path from "path";
 import tag from "../models/tag.model.js";
 import post from "../models/post.model.js";
 import news from "../models/news.model.js";
@@ -8,32 +10,19 @@ import project from "../models/project.model.js";
 import passport from "../passport.config.js";
 import { Router } from "express";
 import { upload } from "../middlewares/multer.middleware.js";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const projectRoot = path.join(__dirname, "..");
 const router = Router();
 import * as dotenv from "dotenv";
 dotenv.config();
-import {
-    S3Client,
-    PutObjectCommand,
-    GetObjectCommand,
-    DeleteObjectCommand,
-} from "@aws-sdk/client-s3";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+
 import crypto from "crypto";
-const bucketName = process.env.AWS_BUCKET_NAME;
-const region = process.env.AWS_BUCKET_REGION;
-const accessKeyId = process.env.AWS_ACCESS_KEY;
-const secretAccessKey = process.env.AWS_SECRET_KEY;
-const s3 = new S3Client({
-    region,
-    credentials: {
-        accessKeyId,
-        secretAccessKey,
-    },
-});
 const randomImageName = (bytes = 32) =>
     crypto.randomBytes(bytes).toString("hex");
 export const addNewTag = async (req, res) => {
-    // if (!req.user) return res.redirect("/admin");
     if (req.body.name !== undefined && req.body.name !== "") {
         let exists = await tag.findOne({ name: req.body.name });
         if (exists) {
@@ -68,14 +57,7 @@ export const addnewWorkshop = async (req, res) => {
     let endDate = req.body.endDate;
     let registerationLink = req.body.registerationLink;
     let externalLink = req.body.externalLink;
-    const imgName = randomImageName();
-    const params = {
-        Bucket: bucketName,
-        Key: imgName,
-        Body: req.file.buffer,
-        ContentType: req.file.mimeType,
-    };
-    const data = await s3.send(new PutObjectCommand(params));
+    const imgName = req.file ? req.file.filename.replace(/\s/g, "_") : null;
     if (
         title !== undefined &&
         title !== "" &&
@@ -150,14 +132,7 @@ export const addNewTeamMember = async (req, res) => {
         description = req.body.description,
         email = req.body.email,
         interests = req.body.interests;
-    const imgName = randomImageName();
-    const params = {
-        Bucket: bucketName,
-        Key: imgName,
-        Body: req.file.buffer,
-        ContentType: req.file.mimeType,
-    };
-    const data = await s3.send(new PutObjectCommand(params));
+    const imgName = req.file ? req.file.filename.replace(/\s/g, "_") : null;
     if (
         name !== undefined &&
         name !== "" &&
@@ -280,43 +255,56 @@ export const deleteNews = async (req, res) => {
 };
 export const deleteWorkshop = async (req, res) => {
     if (!req.user) return res.redirect("/admin");
+
     let { id } = req.params;
     if (id !== undefined && id !== "") {
         const w = await workshop.findById(id);
         if (!w) {
             return res.redirect("/admin");
         }
-        const params = {
-            Bucket: bucketName,
-            Key: w.workshopImg,
-        };
-        const command = new DeleteObjectCommand(params);
-        await s3.send(command);
-        await workshop.findByIdAndDelete(id);
-        console.log("Workshop Deleted");
+
+        const imagePath = path.join(projectRoot, "uploads", w.workshopImg);
+
+        fs.unlink(imagePath, async (err) => {
+            if (err) {
+                console.error("Error deleting the image file:", err);
+                return res.redirect("/admin");
+            }
+
+            await workshop.findByIdAndDelete(id);
+            console.log("Workshop Deleted");
+            return res.redirect("/admin");
+        });
+    } else {
         return res.redirect("/admin");
     }
-    return res.redirect("/admin");
 };
+
 export const deleteTeamMember = async (req, res) => {
     if (!req.user) return res.redirect("/admin");
+
     let { id } = req.params;
     if (id !== undefined && id !== "") {
         const t = await team.findById(id);
         if (!t) {
             return res.redirect("/admin");
         }
-        const params = {
-            Bucket: bucketName,
-            Key: t.profileImg,
-        };
-        const command = new DeleteObjectCommand(params);
-        await s3.send(command);
-        await team.findByIdAndDelete(id);
-        console.log("Team Member Deleted");
+
+        const imagePath = path.join(projectRoot, "uploads", t.profileImg);
+
+        fs.unlink(imagePath, async (err) => {
+            if (err) {
+                console.error("Error deleting the image file:", err);
+                return res.redirect("/admin");
+            }
+
+            await team.findByIdAndDelete(id);
+            console.log("Team Member Deleted");
+            return res.redirect("/admin");
+        });
+    } else {
         return res.redirect("/admin");
     }
-    return res.redirect("/admin");
 };
 export const deleteCourse = async (req, res) => {
     if (!req.user) return res.redirect("/admin");

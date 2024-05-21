@@ -9,11 +9,16 @@ import workshopRouter from "./routes/workshop.routes.js";
 import postsRouter from "./routes/post.routes.js";
 import courseRouter from "./routes/course.routes.js";
 import teamRouter from "./routes/team.routes.js";
-import projectRouter from "./routes/project.routes.js"
+import projectRouter from "./routes/project.routes.js";
 import adminRouter from "./admin/adminRoutes.js";
 import passport from "./passport.config.js";
 import session from "express-session";
 import userRouter from "./routes/user.routes.js";
+import path from "path";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 dotenv.config();
 const app = express();
 app.set("view engine", "ejs");
@@ -21,6 +26,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(morgan("dev"));
 app.use(cors());
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use(
     session({
         secret: process.env.SESSION_SECRET,
@@ -44,7 +50,7 @@ app.use("/workshops", workshopRouter);
 app.use("/posts", postsRouter);
 app.use("/courses", courseRouter);
 app.use("/team", teamRouter);
-app.use("/projects",projectRouter);
+app.use("/projects", projectRouter);
 app.use("/admin", checkAuthenticated, adminRouter);
 app.use("/user", userRouter);
 app.listen(
